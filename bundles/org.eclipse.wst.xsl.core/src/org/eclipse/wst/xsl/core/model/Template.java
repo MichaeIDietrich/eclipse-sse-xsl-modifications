@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class Template extends XSLElement
 {
-	final List<Variable> variables = new ArrayList<Variable>();
 	final List<Parameter> parameters = new ArrayList<Parameter>();
 	
 	/**
@@ -44,15 +43,6 @@ public class Template extends XSLElement
 		parameters.add(parameter);
 	}
 	
-	/**
-	 * Add a variable to this.
-	 * 
-	 * @param var the variable to add
-	 */
-	public void addVariable(Variable var)
-	{
-		variables.add(var);
-	}
 
 	/**
 	 * Get the value of the <code>name</code> attribute if one exists.

@@ -197,11 +197,26 @@ public class XSLValidator {
 			} catch (XPathExpressionException e) {
 				createMarker(report, att,
 						getPreference(ValidationPreferences.XPATHS),
-						Messages.XSLValidator_1);
+						Messages.XSLValidator_1 + extractXPathMessage(e.getMessage())); //$NON-NLS-1$
 			} catch (NullPointerException e) {
 				// not sure why NPE is being thrown here
 			}
 		}
+	}
+	
+	private static String extractXPathMessage(String fullMessage) {
+	  
+	  if (fullMessage == null) {
+	    return ""; //$NON-NLS-1$
+	  }
+	  
+	  try {
+	    fullMessage = fullMessage.substring(31);
+	  } catch (Exception ex) {
+	    XSLCorePlugin.log(ex);
+	  }
+	  
+	  return ":\n" + fullMessage; //$NON-NLS-1$
 	}
 
 	private void checkCircularRef(StylesheetModel stylesheetComposed,

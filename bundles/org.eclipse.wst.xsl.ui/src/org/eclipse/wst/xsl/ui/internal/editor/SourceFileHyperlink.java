@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorPart;
@@ -23,6 +24,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.wst.xsl.core.model.XSLAttribute;
 import org.eclipse.wst.xsl.core.model.XSLNode;
 import org.eclipse.wst.xsl.ui.internal.Messages;
 import org.eclipse.wst.xsl.ui.internal.XSLUIPlugin;
@@ -100,10 +102,14 @@ public class SourceFileHyperlink implements IHyperlink
 					IDocument openedDocument = (IDocument)editor.getAdapter(IDocument.class);
 					if (openedDocument != null)
 					{
-						int lineOffset = openedDocument.getLineOffset(sourceArtifact.getLineNumber());
-						int offset = lineOffset + sourceArtifact.getColumnNumber();
-						//textEditor.selectAndReveal(offset, sourceArtifact.getLength());
-						textEditor.setHighlightRange(offset, sourceArtifact.getLength(), true);
+						Position position = getNodePosition(openedDocument);
+						
+						textEditor.getSite().getPage().getNavigationHistory().markLocation(textEditor);
+						
+	          textEditor.selectAndReveal(position.getOffset(), position.getLength());
+						//textEditor.setHighlightRange(position.getOffset(), position.getLength(), true);
+						
+						textEditor.getSite().getPage().getNavigationHistory().markLocation(textEditor);
 					}
 				}
 			}
@@ -111,11 +117,41 @@ public class SourceFileHyperlink implements IHyperlink
 			{
 				XSLUIPlugin.log(pie);
 			}
-			catch (BadLocationException e)
-			{
-				XSLUIPlugin.log(e);
-			}
 		}
 	}
+  
+  private Position getNodePosition(IDocument relatedDocument) {
+    
+    try {
+      int lineOffset = relatedDocument.getLineOffset(sourceArtifact.getLineNumber());
+      
+      // if attribute node, select attribute value
+      if (sourceArtifact instanceof XSLAttribute) {
+          
+        int end = lineOffset + sourceArtifact.getColumnNumber() + sourceArtifact.getLength();
+        
+        int length = ((XSLAttribute) sourceArtifact).getValue().length();
+        
+        //since the length implementation of an attribute is inaccurate, we need to search for it
+        for (; end > sourceArtifact.getOffset(); end--) {
+          
+          char c = relatedDocument.getChar(end);
+          if (c == '"' || c == '\'') {
+            
+            int offset = end - length;
+            return new Position(offset, length);
+          }
+        }
+      }
+      
+      int offset = lineOffset + sourceArtifact.getColumnNumber();
+      
+      return new Position(offset, sourceArtifact.getLength());
+    } catch (BadLocationException e) {
+      XSLUIPlugin.log(e);
+    }
+    
+    return new Position(0);
+  }
 
 }

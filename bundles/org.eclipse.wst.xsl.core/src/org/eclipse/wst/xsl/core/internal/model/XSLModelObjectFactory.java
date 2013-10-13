@@ -140,7 +140,7 @@ public class XSLModelObjectFactory {
 			inc.setOffset(node.getStartOffset());
 			inc.setLineNumber(line);
 			inc.setColumnNumber(col);
-			inc.setLength(node.getLength());
+			inc.setLength(node.getEndOffset() - node.getStartOffset());
 		} catch (BadLocationException e) {
 			XSLCorePlugin.log(e);
 		}

@@ -14,13 +14,16 @@
 package org.eclipse.wst.xsl.core.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.wst.xsl.core.XSLCore;
 import org.eclipse.wst.xsl.core.internal.util.Debug;
+import org.w3c.dom.Element;
 
 /**
  * The composed stylesheet, consisting of all templates and variables available
@@ -50,6 +53,7 @@ public class StylesheetModel extends XSLModelObject {
 	final Set<Template> templateSet = new HashSet<Template>();
 	final List<Template> templates = new ArrayList<Template>();
 	final List<Variable> globalVariables = new ArrayList<Variable>();
+	final Map<Variable, Element> localVariables = new HashMap<Variable, Element>();
 	final List<CallTemplate> callTemplates = new ArrayList<CallTemplate>();
 	final List<Function> functions = new ArrayList<Function>();
 
@@ -100,6 +104,16 @@ public class StylesheetModel extends XSLModelObject {
 	 */
 	public List<Variable> getGlobalVariables() {
 		return globalVariables;
+	}
+	
+	/**
+	 * Get all local variables that are included in this stylesheet anywhere in
+	 * the hierarchy of this stylesheet.
+	 * 
+	 * @return the set of variables in the entire hierarchy
+	 */
+	public Map<Variable, Element> getLocalVariables() {
+	  return localVariables;
 	}
 
 	/**
@@ -188,6 +202,7 @@ public class StylesheetModel extends XSLModelObject {
 		templates.addAll(stylesheet.getTemplates());
 		templateSet.addAll(stylesheet.getTemplates());
 		globalVariables.addAll(stylesheet.globalVariables);
+		localVariables.putAll(stylesheet.localVariables);
 		callTemplates.addAll(stylesheet.getCalledTemplates());
 		functions.addAll(stylesheet.getFunctions());
 		for (Include inc : stylesheet.getIncludes()) {

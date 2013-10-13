@@ -34,6 +34,7 @@ import org.eclipse.wst.xsl.core.internal.util.FileUtil;
 import org.eclipse.wst.xsl.core.model.Stylesheet;
 import org.eclipse.wst.xsl.core.model.StylesheetModel;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -291,6 +292,19 @@ public class XSLCore {
 			return (Node) inode;
 		}
 		return null;
+	}
+	
+	/**
+	 * Checks if one element is contained in the dom hierarchy of another element.
+	 * 
+	 * @param ancestor
+	 * @param child
+	 * @return
+	 */
+	public static boolean isAncestorOf(Element ancestor, Element child) {
+	  Node parent = child.getParentNode();
+	  return ancestor.equals(child) || parent != null && parent instanceof Element && 
+	      isAncestorOf(ancestor, (Element) parent);
 	}
 
 }

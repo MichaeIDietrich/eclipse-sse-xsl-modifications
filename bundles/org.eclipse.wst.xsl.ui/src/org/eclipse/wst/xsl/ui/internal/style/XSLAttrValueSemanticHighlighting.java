@@ -12,9 +12,13 @@ package org.eclipse.wst.xsl.ui.internal.style;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.jface.text.Position;
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion;
+import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion;
+import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList;
 import org.eclipse.wst.sse.ui.ISemanticHighlighting;
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext;
 
@@ -40,6 +44,8 @@ public class XSLAttrValueSemanticHighlighting extends
 		if (!array.isEmpty()) {
 			array.toArray(allPos);
 		}
-		return allPos;	}
+		return allPos;
+	}
+	
 
 }

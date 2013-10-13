@@ -12,9 +12,12 @@
 package org.eclipse.wst.xsl.core.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.w3c.dom.Element;
 
 /**
  * The <code>xsl:stylesheet</code> model element.
@@ -28,6 +31,7 @@ public class Stylesheet extends XSLElement {
 	final List<Import> imports = new ArrayList<Import>();
 	final List<Template> templates = new ArrayList<Template>();
 	final List<CallTemplate> calledTemplates = new ArrayList<CallTemplate>();
+	final Map<Variable, Element> localVariables = new HashMap<Variable, Element>();
 	final List<Variable> globalVariables = new ArrayList<Variable>();
 	final List<XSLElement> elements = new ArrayList<XSLElement>();
 	final List<Function> functions = new ArrayList<Function>();
@@ -144,6 +148,18 @@ public class Stylesheet extends XSLElement {
 	 */
 	public void addGlobalVariable(Variable var) {
 		globalVariables.add(var);
+	}
+	
+	/**
+	 * Add a local variable to this.
+	 * 
+	 * @param parent
+	 *            parent dom element of the variable
+	 * @param var
+	 *            the variable to add
+	 */
+	public void addLocalVariable(Element parent, Variable var) {
+	  localVariables.put(var, parent);
 	}
 
 	@Override

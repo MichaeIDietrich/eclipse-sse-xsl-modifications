@@ -114,10 +114,12 @@ public class XSLElementFactory {
 			Variable var = new Variable(stylesheetParserData.getStylesheet());
 			stylesheetParserData.getStylesheet().addGlobalVariable(var);
 			xslEl = var;
-		} else if (stylesheetParserData.getElementStack().size() > 1 && stylesheetParserData.getCurrentTemplate() != null) {// local
-																		// variable
+		} else if (stylesheetParserData.getElementStack().size() > 1) {// local variable
 			Variable var = new Variable(stylesheetParserData.getStylesheet());
-			stylesheetParserData.getCurrentTemplate().addVariable(var);
+			Node parentNode = element.getParentNode();
+			if (parentNode != null && parentNode instanceof Element) {
+			  stylesheetParserData.getStylesheet().addLocalVariable((Element) parentNode, var);
+			}
 			xslEl = var;
 		}
 		return xslEl;
